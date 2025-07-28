@@ -27,7 +27,9 @@ class _PantallaPlanState extends State<PantallaPlan> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: _indiceInferior == 1
+        ? null
+        : AppBar(
         title: Text(
           '${widget.planSeleccionado}',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),

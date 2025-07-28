@@ -1,23 +1,32 @@
+
 import 'package:flutter/material.dart';
 import 'pantallas/pantalla_login.dart';
 import 'pantallas/pantalla_registro.dart';
 import 'pantallas/pantalla_principal.dart';
 import 'pantallas/pantalla_inicio.dart';
 
-void main() {
+import 'package:hive_flutter/hive_flutter.dart';
+import 'models/mensaje_model.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializa Hive y abre la caja de mensajes
+  await Hive.initFlutter();
+  Hive.registerAdapter(MensajeAdapter());
+  await Hive.openBox<List>('conversaciones');
+
   runApp(const RompeCorazonesApp());
 }
 
 class RompeCorazonesApp extends StatelessWidget {
   const RompeCorazonesApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'RompeCorazones App',
       theme: ThemeData(
-
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const PantallaPrincipal(),
