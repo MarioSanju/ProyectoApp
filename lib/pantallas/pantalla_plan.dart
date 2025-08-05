@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'pantalla_ia.dart';
 import 'pantalla_perfil.dart';
-import '../contenido/datos_retos.dart';  // Aquí está la clase Reto
+import '../contenido/datos_retos.dart';
 import 'pantalla_video.dart';
 import 'pantalla_test.dart';
+import 'pantalla_diario.dart';
+import 'dart:ui';
 
 class PantallaPlan extends StatefulWidget {
   final String planSeleccionado;
@@ -27,24 +29,35 @@ class _PantallaPlanState extends State<PantallaPlan> {
     ];
 
     return Scaffold(
-      appBar: _indiceInferior == 1
-        ? null
-        : AppBar(
-        title: Text(
-          '${widget.planSeleccionado}',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+      extendBody: true,
+      backgroundColor: Colors.transparent,
+      body: pantallasInferiores[_indiceInferior],
+      bottomNavigationBar: ClipRRect(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            height: 72,
+            decoration: BoxDecoration(
+              color: Colors.deepPurple.withOpacity(0.3), // más suave y translúcido
+            ),
+            child: BottomNavigationBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.white70,
+              currentIndex: _indiceInferior,
+              onTap: (index) => setState(() => _indiceInferior = index),
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Plan'),
+                BottomNavigationBarItem(icon: Icon(Icons.smart_toy), label: 'IA'),
+                BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+              ],
+            ),
+          ),
         ),
       ),
-      body: pantallasInferiores[_indiceInferior],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _indiceInferior,
-        onTap: (index) => setState(() => _indiceInferior = index),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Plan'),
-          BottomNavigationBarItem(icon: Icon(Icons.smart_toy), label: 'IA'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
-        ],
-      ),
+
     );
   }
 }
@@ -81,89 +94,53 @@ class _SubPantallaPlanState extends State<SubPantallaPlan> {
         .toList();
     retosFiltrados.sort((a, b) => a.dia.compareTo(b.dia));
 
-    return Column(
-      children: [
-        // Menú superior con indicador activo
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/imagenes/diario.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: SafeArea(
+        child: Column(
           children: [
-            _buildTabButton('Retos diarios', 0),
-            _buildTabButton('Pensamientos', 1),
-            _buildTabButton('Videos', 2),
+            const SizedBox(height: 16),
+            Text(
+              widget.planSeleccionado,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildTabButton('Retos diarios', 0),
+                _buildTabButton('Diario emocional', 1),
+                _buildTabButton('Informe', 2),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _indiceSubseccion = index;
+                  });
+                },
+                children: [
+                  _buildRetos(retosFiltrados),
+                  PantallaDiarioEmocional(),
+                  Center(child: Text('Contenido de Videos Motivacionales', style: TextStyle(color: Colors.white))),
+                ],
+              ),
+            ),
           ],
         ),
-        Expanded(
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _indiceSubseccion = index;
-              });
-            },
-            children: [
-              // Retos diarios
-              ListView.builder(
-                itemCount: retosFiltrados.length,
-                itemBuilder: (context, index) {
-                  final reto = retosFiltrados[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 3,
-                    shadowColor: Colors.grey.withOpacity(0.3),
-                    child: ListTile(
-                      contentPadding:
-                      EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.pinkAccent,
-                        radius: 24,
-                        child: Text(
-                          '${reto.dia}°',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                      title: Text(
-                        reto.titulo,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 6.0),
-                        child: Text(
-                          reto.descripcion,
-                          style: TextStyle(
-                            color: Colors.grey[700],
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      trailing: Icon(Icons.arrow_forward_ios,
-                          size: 20, color: Colors.grey[600]),
-                      onTap: () {
-                        _abrirContenidoReto(reto);
-                      },
-                    ),
-                  );
-                },
-              ),
-              // Placeholder para pensamientos
-              Center(
-                  child: Text(
-                      'Contenido de Pensamientos para el plan ${widget.planSeleccionado}')),
-              // Placeholder para videos
-              Center(child: Text('Contenido de Videos Motivacionales')),
-            ],
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -183,7 +160,7 @@ class _SubPantallaPlanState extends State<SubPantallaPlan> {
           Text(
             texto,
             style: TextStyle(
-              color: activo ? Colors.blue : Colors.grey,
+              color: activo ? Colors.white : Colors.white70,
               fontWeight: activo ? FontWeight.bold : FontWeight.normal,
               fontSize: 16,
             ),
@@ -193,12 +170,64 @@ class _SubPantallaPlanState extends State<SubPantallaPlan> {
             height: 3,
             width: 80,
             decoration: BoxDecoration(
-              color: activo ? Colors.blue : Colors.transparent,
+              color: activo ? Colors.white : Colors.transparent,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildRetos(List<Reto> retos) {
+    return ListView.builder(
+      itemCount: retos.length,
+      itemBuilder: (context, index) {
+        final reto = retos[index];
+        return Card(
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 3,
+          shadowColor: Colors.grey.withOpacity(0.3),
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            leading: CircleAvatar(
+              backgroundColor: Colors.pinkAccent,
+              radius: 24,
+              child: Text(
+                '${reto.dia}°',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            title: Text(
+              reto.titulo,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 6.0),
+              child: Text(
+                reto.descripcion,
+                style: TextStyle(
+                  color: Colors.grey[700],
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            trailing: Icon(Icons.arrow_forward_ios,
+                size: 20, color: Colors.grey[600]),
+            onTap: () => _abrirContenidoReto(reto),
+          ),
+        );
+      },
     );
   }
 
@@ -246,4 +275,5 @@ class _SubPantallaPlanState extends State<SubPantallaPlan> {
     );
   }
 }
+
 

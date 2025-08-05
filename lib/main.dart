@@ -15,7 +15,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(MensajeAdapter());
   await Hive.openBox<List>('conversaciones');
-
+  await Hive.openBox<String>('diario_emocional');
   runApp(const RompeCorazonesApp());
 }
 

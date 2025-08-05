@@ -18,6 +18,7 @@ class _PantallaIAState extends State<PantallaIA> {
   final TextEditingController controlador = TextEditingController();
   bool cargando = false;
   String respuestaAnimada = '';
+  String? claveConversacionActual; // 👈 NUEVA VARIABLE
 
   final String apiKey = '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';
 
@@ -73,16 +74,19 @@ class _PantallaIAState extends State<PantallaIA> {
 
   void guardarConversacion() async {
     final box = Hive.box<List>('conversaciones');
-    final clave = DateTime.now().toIso8601String();
+
+    // ✅ Si es nueva, se asigna clave
+    claveConversacionActual ??= DateTime.now().toIso8601String();
 
     final lista = mensajes
         .map((m) => Mensaje(role: m['role']!, content: m['content']!))
         .toList();
-    await box.put(clave, lista);
+    await box.put(claveConversacionActual, lista);
   }
 
-  void cargarConversacion(List<Mensaje> conversacion) {
+  void cargarConversacion(List<Mensaje> conversacion, String clave) {
     setState(() {
+      claveConversacionActual = clave; // ✅ asignar clave existente
       mensajes.clear();
       mensajes.addAll(conversacion
           .map((m) => {'role': m.role, 'content': m.content})
@@ -107,6 +111,7 @@ class _PantallaIAState extends State<PantallaIA> {
               onTap: () {
                 Navigator.pop(context);
                 setState(() {
+                  claveConversacionActual = null; // ✅ nueva clave al empezar
                   mensajes.clear();
                 });
               },
@@ -117,8 +122,7 @@ class _PantallaIAState extends State<PantallaIA> {
                 itemCount: claves.length,
                 itemBuilder: (context, index) {
                   final clave = claves[index];
-                  final mensajesGuardados =
-                  (box.get(clave) as List).cast<Mensaje>();
+                  final mensajesGuardados = (box.get(clave) as List).cast<Mensaje>();
 
                   final primerContenido = mensajesGuardados.isNotEmpty
                       ? mensajesGuardados.first.content
@@ -137,7 +141,7 @@ class _PantallaIAState extends State<PantallaIA> {
                     ),
                     onTap: () {
                       Navigator.pop(context);
-                      cargarConversacion(mensajesGuardados);
+                      cargarConversacion(mensajesGuardados, clave); // ✅ pasar clave
                     },
                   );
                 },
@@ -148,17 +152,22 @@ class _PantallaIAState extends State<PantallaIA> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: false, backgroundColor: Color(0xFF121212), title: Text('solo para crear espacio',style: TextStyle(color: Color(0xFF121212)),),),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF121212),
+        title: const Text('', style: TextStyle(color: Color(0xFF121212))),
+      ),
       backgroundColor: const Color(0xFF121212),
       body: SafeArea(
-        top: false, // No usamos el padding superior automático
+        top: false,
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 24.0), // Ajusta la separación superior
+              padding: const EdgeInsets.only(top: 24.0),
               child: Column(
                 children: [
                   Expanded(
@@ -185,7 +194,8 @@ class _PantallaIAState extends State<PantallaIA> {
                         final esUsuario = mensaje['role'] == 'user';
 
                         return Align(
-                          alignment: esUsuario ? Alignment.centerRight : Alignment.centerLeft,
+                          alignment:
+                          esUsuario ? Alignment.centerRight : Alignment.centerLeft,
                           child: Container(
                             margin: const EdgeInsets.symmetric(vertical: 6),
                             padding: const EdgeInsets.all(12),
@@ -207,11 +217,6 @@ class _PantallaIAState extends State<PantallaIA> {
                       },
                     ),
                   ),
-                  if (cargando)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: CircularProgressIndicator(color: Colors.deepPurpleAccent),
-                    ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                     child: Row(
@@ -229,7 +234,8 @@ class _PantallaIAState extends State<PantallaIA> {
                                 hintText: 'Escribe algo...',
                                 hintStyle: TextStyle(color: Colors.white70),
                                 border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                contentPadding:
+                                EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                               ),
                             ),
                           ),
