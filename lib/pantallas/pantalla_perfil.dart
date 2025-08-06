@@ -20,7 +20,7 @@ class PantallaPerfil extends StatelessWidget {
         backgroundColor: color.withOpacity(0.1),
         child: Icon(icon, color: color),
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+      title: Text(title, style: const TextStyle(fontSize: 16,fontWeight: FontWeight.w500)),
       subtitle: subtitle.isNotEmpty ? Text(subtitle) : null,
       onTap: onTap,
     );
@@ -31,7 +31,8 @@ class PantallaPerfil extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const Text("AJUSTES", style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 55,),
+        const Text("AJUSTES", style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold,fontSize: 18)),
         const SizedBox(height: 8),
         Card(
           child: Column(
@@ -65,7 +66,7 @@ class PantallaPerfil extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        const Text("CUENTA", style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold)),
+        const Text("CUENTA", style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold,fontSize: 18)),
         const SizedBox(height: 8),
         Card(
           child: Column(
@@ -85,7 +86,7 @@ class PantallaPerfil extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        const Text("AYUDA", style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold)),
+        const Text("AYUDA", style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold, fontSize: 18)),
         const SizedBox(height: 8),
         Card(
           child: Column(

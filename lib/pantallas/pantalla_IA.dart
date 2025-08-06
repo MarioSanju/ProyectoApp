@@ -18,7 +18,7 @@ class _PantallaIAState extends State<PantallaIA> {
   final TextEditingController controlador = TextEditingController();
   bool cargando = false;
   String respuestaAnimada = '';
-  String? claveConversacionActual; // 👈 NUEVA VARIABLE
+  String? claveConversacionActual;
 
   final String apiKey = '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';
 
@@ -158,10 +158,10 @@ class _PantallaIAState extends State<PantallaIA> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: const Color(0xFF121212),
-        title: const Text('', style: TextStyle(color: Color(0xFF121212))),
+        backgroundColor: const Color(0xFF000000),
+        title: const Text('', style: TextStyle(color: Color(0xFF000000))),
       ),
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: const Color(0xFF000000),
       body: SafeArea(
         top: false,
         child: Stack(
