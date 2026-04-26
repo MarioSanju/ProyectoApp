@@ -1,18 +1,35 @@
-# rompecorazones_app
+# Emotional Wellness App (Reconecta)
 
-App para superar rupturas en 30 días
+Mobile application focused on emotional recovery and self-reflection after breakups.
 
-## Getting Started
+## Features
+- Emotional diary to write daily thoughts and feelings
+- Progress tracking system (days without contact)
+- Guided content for emotional healing
+- Multi-screen navigation (home, diary, reports)
+- Basic premium section with additional insights
 
-This project is a starting point for a Flutter application.
+## Tech Stack
+- Flutter (Dart)
+- Local state management
+- UI built with custom widgets
 
-A few resources to get you started if this is your first Flutter project:
+## Screenshots
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![Onboarding](images/onboarding.png)
+![Main Screen](images/home.png)
+![Diary](images/diary.png)
+![Premium](images/premium.png)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Project Structure
+- `/lib` → main application logic
+- `/assets` → images and UI resources
+- `/android`, `/ios` → platform-specific code
 
-29 horas dedicadas
+## How to run
+1. Clone the repository
+2. Run `flutter pub get`
+3. Run `flutter run`
+
+## Notes
+This project was developed as a personal project to practice mobile app development and UI design.
