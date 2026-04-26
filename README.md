@@ -16,10 +16,12 @@ Mobile application focused on emotional recovery and self-reflection after break
 
 ## Screenshots
 
-![Onboarding](images/onboarding.png)
-![Main Screen](images/home.png)
-![Diary](images/diary.png)
-![Premium](images/premium.png)
+<img src="assets/imagenes/readme_onboarding.jpg" width="220">
+<img src="assets/imagenes/readme_home.jpg" width="220">
+<img src="assets/imagenes/readme_diary.jpg" width="220">
+<img src="assets/imagenes/readme_premium.jpg" width="220">
+<img src="assets/imagenes/readme_IA.jpg" width="220">
+<img src="assets/imagenes/readme_profile.jpg" width="220">
 
 ## Project Structure
 - `/lib` → main application logic
